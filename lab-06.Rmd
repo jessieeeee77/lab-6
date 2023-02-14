@@ -37,6 +37,7 @@ staff_long %>%
   geom_line()
 
 ```
+#Exercise 2
 ```{r 2}
 ggplot(staff_long, aes(y = faculty_type, fill = value)) +
   geom_bar(position = "fill") +
@@ -59,20 +60,49 @@ staff_long %>%
 ```
 
 
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
 
-### Exercise 2
-
-Remove this text, and add your answer for Exercise 1 here.
-Add code chunks as needed.
-Don't forget to label your code chunk.
-Do not use spaces in code chunk labels.
 
 ### Exercise 3
 
-...
+
+```{r 3}
+fisheries <- read_csv("data/fisheries.csv")
+#I think it might be better to show the proportion of the capture vs. aquaculture of fishes in each country, it might look better.
+
+
+fish<- filter(fisheries, total > 1000000)
+fish$PROP <- fish$capture/fish$total
+png(filename="fish.png", width=900, height=400)
+ggplot(fish,aes(x = country, y = PROP)) +  geom_line() +
+  geom_point(position = "identity") 
+
+```
+```{r try geom_point}
+
+ggplot(fish,aes(x = country, y = aquaculture)) + 
+  geom_point(position = "identity") 
+
+ggplot(fish, aes(x ="country", fill = aquaculture, color=country))+
+    geom_bar(width = 1, position = "stack") +
+  coord_polar(theta = "y")
+```
+```{r try pie}
+ggplot(fish, aes(x="", y=capture, fill=country)) + 
+geom_bar(width = 1, stat = "identity") + coord_polar("y", start=0)
+ggplot(fish, aes(x="", y=aquaculture, fill=country)) + 
+geom_bar(width = 1, stat = "identity") + coord_polar("y", start=0)
+ggplot(fish, aes(x="", y=total, fill=country)) + 
+geom_bar(width = 1, stat = "identity") + coord_polar("y", start=0)
+
+#I think pie charts represent the country difference in capture and aquaculture significantly better.
+```
+#Exercise 4
+```{r 4}
+
+```
+
+
+
+
 
 Add exercise headings as needed.
