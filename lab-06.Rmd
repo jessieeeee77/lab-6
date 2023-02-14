@@ -18,13 +18,14 @@ use_git_config(user.name = "jessieeeee77",
 
 ### Exercise 1
 ```{r}
-staff <- read_csv("data/instructional-staff.csv")
+staff <- read_csv("data/instructional-staff.csv",show_col_types = FALSE)
 staff_long <- staff %>%
   pivot_longer(cols = -faculty_type, names_to = "year") %>%
   mutate(value = as.numeric(value))
+
 staff_long %>%
-  ggplot(aes(x = year, y = value, color = faculty_type)) +
-  geom_line()
+  ggplot(aes(x = year, y = value)) +
+  geom_point( aes(color = faculty_type))
 ```
 ```{r 1}
 png(filename="faculty_type.png", width=600, height=400)
@@ -66,7 +67,7 @@ staff_long %>%
 
 
 ```{r 3}
-fisheries <- read_csv("data/fisheries.csv")
+fisheries <- read_csv("data/fisheries.csv",show_col_types = FALSE)
 #I think it might be better to show the proportion of the capture vs. aquaculture of fishes in each country, it might look better.
 
 
@@ -98,7 +99,71 @@ geom_bar(width = 1, stat = "identity") + coord_polar("y", start=0)
 ```
 #Exercise 4
 ```{r 4}
+library(tidyverse) 
+library(mosaicData) 
+data(Whickham)
+?Whickham
+library(performance)
 
+#Observation
+#1314, each represents a smoker
+#3, categorical, categorical, and numeric
+```
+
+
+```{r 4.3}
+Whickham %>%
+ggplot(aes(x=outcome)) + geom_bar()
+
+Whickham %>%
+  ggplot(aes(x=smoker)) + geom_bar()
+
+Whickham %>%
+  ggplot(aes(x=age)) + geom_bar()
+```
+
+
+```{r 4.4}
+#should be negatively associated.
+```
+
+```{r 4.5}
+Whickham %>%
+  count(smoker, outcome) %>%
+  group_by(smoker) %>%
+  mutate(prop_outcome = n / sum(n)) %>%
+  select(smoker, prop_outcome)
+
+Whickham %>% ggplot(aes(y = outcome, fill = smoker)) +
+  geom_bar(position = "fill") +
+  theme(legend.position = "bottom")
+#could not see the significant association between smoker and outcome. does not go as I expected. the non-smokers' (.68) death rate is higher than smokers'(.31). Apparently age should play a role in this association.
+```
+```{r 4.6}
+whick <- Whickham %>% 
+  mutate(age_cat = dplyr::case_when(
+      age <= 44 ~ "18-44",
+      age > 44 & age <= 64 ~ "45-64",
+      age > 64 ~ "65+"),
+    age_cat = factor(age_cat,
+      level = c("18-44", "45-64","65+")
+    )
+  )
+
+```
+
+```{r 4.7}
+
+whick %>%
+  count(smoker, age_cat, outcome)
+
+whick %>%
+  ggplot(aes(y = smoker, fill = outcome)) +
+  geom_bar(position = "fill") +
+  facet_wrap(. ~ age_cat) +
+  theme(legend.position = "bottom")
+
+#from the graph, smoking might be associated with death between 45-64, and 65+. Can't tell if the associations between death and smoking were significant. The changes are due to the fact that people (at least in this sample) rarely die during age 18-44, and have higher death rate after age 65.
 ```
 
 
